@@ -400,6 +400,24 @@ On Linux, `DateTime.UtcNow` uses the [gettimeofday](http://man7.org/linux/man-pa
 
 Resolution: `1 us`
 
+```
+Host Process Environment Information:
+BenchmarkDotNet=v0.9.8.0
+OS=Unix 4.4.0.34
+Processor=?, ProcessorCount=8
+Frequency=10000000 ticks, Resolution=100.0000 ns, Timer=UNKNOWN
+CLR=Mono 4.4.2 (Stable 4.4.2.11/f72fe45 Fri Jul 29 09:58:49 UTC 2016), Arch=64-bit RELEASE
+GC=Concurrent Workstation
+JitModules=
+
+Type=MyBench  Mode=Throughput  GarbageCollection=Concurrent Workstation  
+
+     Method |      Median |    StdDev |
+----------- |------------ |---------- |
+    Latency |  26.7052 ns | 0.4321 ns |
+ Resolution | 999.0681 ns | 6.8931 ns |
+```
+
 ---
 
 ### Latency
