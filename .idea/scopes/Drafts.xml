@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Drafts" pattern="file[aakinshin.net]:en/_drafts/dotnet/*" />
+</component>

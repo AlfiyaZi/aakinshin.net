@@ -1,0 +1,26 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="akinshin">
+    <words>
+      <w>bcltype</w>
+      <w>classlibnative</w>
+      <w>coreclr</w>
+      <w>dotnet</w>
+      <w>ecalllist</w>
+      <w>fcall</w>
+      <w>filetime</w>
+      <w>getrusage</w>
+      <w>gettime</w>
+      <w>gettimeofday</w>
+      <w>icall</w>
+      <w>mscorlib</w>
+      <w>msdn</w>
+      <w>powercfg</w>
+      <w>sysinternals</w>
+      <w>systemtime</w>
+      <w>timespec</w>
+      <w>vsyscalls</w>
+      <w>waitable</w>
+      <w>warmup</w>
+    </words>
+  </dictionary>
+</component>

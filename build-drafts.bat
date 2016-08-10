@@ -13,4 +13,4 @@ xcopy "drafts-ru/_site" "drafts-en/_site" /i /s /y
 xcopy "_files/data" "drafts-en/_site/data" /i /s /y
 xcopy "_files/ru" "drafts-en/_site/ru" /i /s /y
 xcopy "_files/en" "drafts-en/_site/en" /i /s /y
-bin\Pretzel.exe taste drafts-en
+start bin\Pretzel.exe taste drafts-en

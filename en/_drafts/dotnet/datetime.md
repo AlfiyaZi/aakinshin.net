@@ -21,9 +21,9 @@ In this post, I discuss [DateTime.UtcNow](https://msdn.microsoft.com/library/sys
 
 In the .NET Framework, the `DateTime` struct is represented by a `long` value called [Ticks](https://msdn.microsoft.com/library/system.datetime.ticks.aspx). 1 tick equals to `100 ns`, ticks are counted starting from 12:00 AM January 1, year 1 A.D. (Gregorian Calendar).
 
-In Windows, there is another sturcutre for time called [FILETIME](https://msdn.microsoft.com/library/windows/desktop/ms724284.aspx). It also uses `100 ns`-ticks, but the startint point is January 1, 1601 (UTC). You can get current `FILETIME` via [GetSystemTimeAsFileTime ](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724397.aspx).
+In Windows, there is another structure for time called [FILETIME](https://msdn.microsoft.com/library/windows/desktop/ms724284.aspx). It also uses `100 ns`-ticks, but the starting point is January 1, 1601 (UTC). You can get current `FILETIME` via [GetSystemTimeAsFileTime](https://msdn.microsoft.com/en-us/library/windows/desktop/ms724397.aspx).
 
-Now, let's look at the source code of `DateTime` in the coreclr repo: [DateTime.cs](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs) ([the corresonded class](referencesource.microsoft.com/#mscorlib/system/datetime.cs) in the Full .NET Framework looks almost the same; Mono uses code from the full framework directly). The implementation is based on `GetSystemTimeAsFileTime` and use [FileTimeOffset](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs#L93) for conversion. A simplified version of `UtcNow` from [DateTime.cs](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs#L915):
+Now, let's look at the source code of `DateTime` in the coreclr repo: [DateTime.cs](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs) ([the corresponded class](referencesource.microsoft.com/#mscorlib/system/datetime.cs) in the Full .NET Framework looks almost the same; Mono uses code from the full framework directly). The implementation is based on `GetSystemTimeAsFileTime` and use [FileTimeOffset](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs#L93) for conversion. A simplified version of `UtcNow` from [DateTime.cs](https://github.com/dotnet/coreclr/blob/v1.0.0/src/mscorlib/src/System/DateTime.cs#L915):
 ```cs
 public static DateTime UtcNow {
     get {
@@ -75,7 +75,7 @@ FCIMPL0(INT64, SystemNative::__GetSystemTimeAsFileTime)
 FCIMPLEND;
 ```
 
-You can find the definion of `FCIMPL0` in [src/vm/fcall.h](https://github.com/dotnet/coreclr/blob/v1.0.0/src/vm/fcall.h).
+You can find the definition of `FCIMPL0` in [src/vm/fcall.h](https://github.com/dotnet/coreclr/blob/v1.0.0/src/vm/fcall.h).
 
 [pal/src/file/filetime.cpp](https://github.com/dotnet/coreclr/blob/v1.0.0/src/pal/src/file/filetime.cpp#L502):
 ```cpp
@@ -152,13 +152,13 @@ ICALL(DTIME_1, "GetSystemTimeAsFileTime", mono_100ns_datetime)
 gint64
 mono_100ns_datetime (void)
 {
-	ULARGE_INTEGER ft;
+    ULARGE_INTEGER ft;
 
-	if (sizeof(ft) != sizeof(FILETIME))
-		g_assert_not_reached ();
+    if (sizeof(ft) != sizeof(FILETIME))
+        g_assert_not_reached ();
 
-	GetSystemTimeAsFileTime ((FILETIME*) &ft);
-	return ft.QuadPart;
+    GetSystemTimeAsFileTime ((FILETIME*) &ft);
+    return ft.QuadPart;
 }
 
 #else
@@ -175,16 +175,16 @@ mono_100ns_datetime (void)
 gint64
 mono_100ns_datetime (void)
 {
-	struct timeval tv;
-	if (gettimeofday (&tv, NULL) == 0)
-		return mono_100ns_datetime_from_timeval (tv);
-	return 0;
+    struct timeval tv;
+    if (gettimeofday (&tv, NULL) == 0)
+        return mono_100ns_datetime_from_timeval (tv);
+    return 0;
 }
 
 gint64
 mono_100ns_datetime_from_timeval (struct timeval tv)
 {
-	return (((gint64)tv.tv_sec + EPOCH_ADJUST) * 1000000 + tv.tv_usec) * 10;
+    return (((gint64)tv.tv_sec + EPOCH_ADJUST) * 1000000 + tv.tv_usec) * 10;
 }
 
 #endif
@@ -217,7 +217,7 @@ It's a typical configuration for modern version of Windows. However, you can obs
 
 #### Windows Resolution API
 
-So, how it can be changed? There are some Windows API which can be used: [timeBeginPeriod](https://msdn.microsoft.com/en-us/library/dd757624.aspx)/[timeEndPeriod](https://msdn.microsoft.com/en-us/library/dd757626.aspx) from `winmm.dll` and `NtQueryTimerResolution`/`NtSetTimerResolution` from `ntdll.dll`. You can use it direcly from C\#, here is a helper class for you:
+So, how it can be changed? There are some Windows API which can be used: [timeBeginPeriod](https://msdn.microsoft.com/en-us/library/dd757624.aspx)/[timeEndPeriod](https://msdn.microsoft.com/en-us/library/dd757626.aspx) from `winmm.dll` and `NtQueryTimerResolution`/`NtSetTimerResolution` from `ntdll.dll`. You can use it directly from C\#, here is a helper class for you:
 
 ```cs
 public struct ResolutionInfo
@@ -267,7 +267,7 @@ Console.WriteLine($"Max     = {resolutioInfo.Max}");
 Console.WriteLine($"Current = {resolutioInfo.Current}");
 ```
 
-Output (without any runned apps):
+Output (without any running apps):
 
 ```
 Min     = 156250
@@ -289,7 +289,7 @@ for (int i = 0; i < 10; i++)
 }
 ```
 
-Typicall output:
+Typical output:
 
 ```
 155934
@@ -299,7 +299,7 @@ Typicall output:
 156237
 ```
 
-As you can see, the recieved numbers are not exactly equal to `156250`. So, the difference between two sequential different `DateTime` values is approximately equal to the current timer interval. 
+As you can see, the received numbers are not exactly equal to `156250`. So, the difference between two sequential different `DateTime` values is approximately equal to the current timer interval. 
 
 #### powercfg
 
@@ -332,7 +332,7 @@ A program or service has requested a timer resolution smaller than the platform 
   Requesting Process Path \Device\HarddiskVolume4\Program Files (x86)\Mozilla Firefox\firefox.exe 
 ```
 
-As you can see, default interval is 15.6ms, Firefox requries 1.0ms interval, and `ConsoleApplication1.exe` in my home directory (which just call `WinApi.SetTimerResolution(5000)`) requires 0.5ms interval. `ConsoleApplication1.exe` won, now I have the maximal possible platform timer frequency.
+As you can see, default interval is 15.6ms, Firefox requires 1.0ms interval, and `ConsoleApplication1.exe` in my home directory (which just call `WinApi.SetTimerResolution(5000)`) requires 0.5ms interval. `ConsoleApplication1.exe` won, now I have the maximal possible platform timer frequency.
 
 #### Thread.Sleep
 
@@ -343,11 +343,11 @@ Here I want to ask you a question: what the following call does?
 Thread.Sleep(1);
 ```
 
-Somebody can answer: it suspend the current thread for `1 ms`. Unfortunally, it's a wrong answer. The documentation [states](https://msdn.microsoft.com/library/windows/desktop/ms686298.aspx) the following:
+Somebody can answer: it suspend the current thread for `1 ms`. Unfortunately, it's a wrong answer. The documentation [states](https://msdn.microsoft.com/library/windows/desktop/ms686298.aspx) the following:
 
 > The actual timeout might not be exactly the specified timeout, because the specified timeout will be adjusted to coincide with clock ticks. 
 
-In fact, the elapsed time depends on system timer resolution. Let's write another stupid benchmark (we don't need any accurancy here, we just want to show the `Sleep` behaviour; so, we don't need usual benchmarking routine here like warmup, statistics, and so on):
+In fact, the elapsed time depends on system timer resolution. Let's write another stupid benchmark (we don't need any accuracy here, we just want to show the `Sleep` behaviour; so, we don't need usual benchmarking routine here like warmup, statistics, and so on):
 
 ```cs
 for (int i = 0; i < 5; i++)
@@ -473,7 +473,7 @@ In the next post, I will tell about `Stopwatch`. TODO
 * [MathPirate: Temporal Mechanics: Changing the Speed of Time, Part II (2010)](http://www.mathpirate.net/log/2010/03/20/temporal-mechanics-changing-the-speed-of-time-part-ii/)
 * [The accuracy of gettimeofday in ARM architecture](http://www.programgo.com/article/91674336979/)
 
-#### Stackoverflow
+#### StackOverflow
 
 * [StackOverflow: Windows 7 timing functions - How to use GetSystemTimeAdjustment correctly?](http://stackoverflow.com/q/7685762/184842)
 * [StackOverflow: How frequent is DateTime.Now updated?](http://stackoverflow.com/q/307582/184842)
