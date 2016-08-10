@@ -400,6 +400,55 @@ On Linux, `DateTime.UtcNow` uses the [gettimeofday](http://man7.org/linux/man-pa
 
 Resolution: `1 us`
 
+
+---
+
+### Benchmarks
+
+Let's write a simple benchmarks
+
+```cs
+// TODO: CoreCLR, Clr, Mono
+public class DateTimeBenchmarks
+{
+  [Benchmark]
+  public long Latency() => DateTime.UtcNow.Ticks;
+
+  [Benchmark]
+  public long Resolution()
+  {
+    long lastTicks = DateTime.UtcNow.Ticks;
+    while (DateTime.UtcNow.Ticks == lastTicks)
+    {
+    }
+    return lastTicks;
+  }
+}
+```
+
+Windows (Current Timer Interval = `0.5ms`):
+
+```
+Host Process Environment Information:
+BenchmarkDotNet=v0.9.8.0
+OS=Microsoft Windows NT 6.2.9200.0
+Processor=Intel(R) Core(TM) i7-4702MQ CPU 2.20GHz, ProcessorCount=8
+Frequency=2143477 ticks, Resolution=466.5317 ns, Timer=TSC
+CLR=MS.NET 4.0.30319.42000, Arch=32-bit RELEASE
+GC=Concurrent Workstation
+JitModules=clrjit-v4.6.1586.0
+
+Type=DateTimeBenchmarks  Mode=Throughput  GarbageCollection=Concurrent Workstati
+on
+
+     Method |          Median |      StdDev |
+----------- |---------------- |------------ |
+    Latency |       6.9889 ns |   0.5303 ns |
+ Resolution | 499,706.9488 ns | 456.6739 ns |
+ ```
+
+Xubuntu:
+
 ```
 Host Process Environment Information:
 BenchmarkDotNet=v0.9.8.0
@@ -418,9 +467,6 @@ Type=MyBench  Mode=Throughput  GarbageCollection=Concurrent Workstation
  Resolution | 999.0681 ns | 6.8931 ns |
 ```
 
----
-
-### Latency
 
 ---
 
